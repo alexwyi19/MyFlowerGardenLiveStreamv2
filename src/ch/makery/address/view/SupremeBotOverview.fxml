@@ -107,7 +107,7 @@
                                     </HBox>
                                     <HBox prefHeight="34.0" prefWidth="348.0">
                                        <children>
-                                          <Label fx:id="catagory1" prefHeight="21.0" prefWidth="136.0" text="Size:">
+                                          <Label fx:id="category1" prefHeight="21.0" prefWidth="136.0" text="Size:">
                                              <font>
                                                 <Font size="15.0" />
                                              </font>
@@ -123,7 +123,7 @@
                                     </HBox>
                                     <HBox prefHeight="34.0" prefWidth="348.0">
                                        <children>
-                                          <Label fx:id="catagory" prefHeight="21.0" prefWidth="136.0" text="Catagory:">
+                                          <Label fx:id="category" prefHeight="21.0" prefWidth="136.0" text="Category:">
                                              <font>
                                                 <Font size="15.0" />
                                              </font>

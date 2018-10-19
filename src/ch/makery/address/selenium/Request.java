@@ -50,8 +50,7 @@ public class Request implements Runnable {
 	private String keyword_style_colour;
 	private String keyword_size;
 
-	
-	//Get the references from the main controller and store into variables
+	/* CONSTRUCTOR: Gets the references from the main controller and stores into variables */
 	public Request(SupremeBotOverviewController controller, int taskNumber, String keyword, String size, String category, String color, String profileLoader) {
 		this.controller = controller;
 		this.taskNumber = taskNumber;
@@ -62,7 +61,7 @@ public class Request implements Runnable {
 		this.profileLoader = profileLoader;
 	}
 	
-	//Run this thread using Runnable interface
+	/* Run: Runs this request thread using Runnable interface */
 	@Override
 	public void run() {
 		try {
@@ -325,6 +324,7 @@ public class Request implements Runnable {
 //		}
 	}
 	
+	/* TO DO:  */
 	public void checkout() throws IOException {
 		System.out.println("In Checkout");
 		URL checkOut = new URL("https://www.supremenewyork.com/checkout.json");
@@ -342,10 +342,6 @@ public class Request implements Runnable {
 		mainConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
 		mainConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.8");
 		mainConnection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
-
-
-
-			
 		
 		mainConnection.connect();
 		/////////////////////////////////////////////////////////////////////////
@@ -370,6 +366,7 @@ public class Request implements Runnable {
 		//Check if add to cart was successful, Status code 200 = OK
 		System.out.println(mainConnection.getResponseCode());
 		if(mainConnection.getResponseCode()>=200) {
+			System.out.println("Finished Successful Checkout");
 			System.out.println(mainConnection.getResponseCode());
 			
 			//Console and Status update

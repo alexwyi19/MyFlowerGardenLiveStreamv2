@@ -8,7 +8,7 @@ public class keywordInfo {
 	private String keywords;
 	private String size;
 	private String color;
-	private String catagory;
+	private String category;
 	private String proxy;
 	private String modeID;
 	private int totalTasks;
@@ -45,8 +45,8 @@ public class keywordInfo {
 		return color;
 	}
 
-	public String getCatagory() {
-		return catagory;
+	public String getCategory() {
+		return category;
 	}
 
 	public String getProxy() {
@@ -98,8 +98,8 @@ public class keywordInfo {
 		this.color = color;
 	}
 
-	public void setCatagory(String catagory) {
-		this.catagory = catagory;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public void setMode(String modeID) {
@@ -112,7 +112,7 @@ public class keywordInfo {
 	
 	@Override
 	public String toString() {
-		return "keywordInfo [keywords=" + keywords + ", size=" + size + ", color=" + color + ", catagory=" + catagory
+		return "keywordInfo [keywords=" + keywords + ", size=" + size + ", color=" + color + ", category=" + category
 				+ ", proxy=" + proxy + ", totalTasks=" + totalTasks + ", checkoutDelay=" + checkoutDelay + "]";
 	}
 
