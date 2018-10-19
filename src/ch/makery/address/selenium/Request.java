@@ -96,14 +96,21 @@ public class Request implements Runnable {
 		
 		//Finds the correct colour and variant for the keyword
 		try {
+			System.out.println("Finding variants");
 			this.variant_finder();
+			System.out.println("Finish finding variants");
 		} catch (JSONException e) {
+			System.out.println("Could not find");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		//Create POST Request to add the item to the cart
 		this.add_to_cart();
+		this.checkout();
+		
+		
+		//Create POST Request to check out
 	}
 	  private static String readAll(Reader rd) throws IOException {
 		    StringBuilder sb = new StringBuilder();
@@ -156,14 +163,16 @@ public class Request implements Runnable {
 		JSONObject main = json.getJSONObject("products_and_categories");
 		JSONArray categoryItem = main.getJSONArray(category);
 		
-		System.out.println("I AM FINDING KEYWORD1");
 		//Iterate throught the array objects until keyword is found
 		for (int i = 0; i < categoryItem.length(); i++) {
 			  Object productSearch = categoryItem.get(i);
+			  System.out.println("searching");
+			  System.out.println(((JSONObject) productSearch).optString("name"));
+			  System.out.println(keyword);
 			  if ( ((JSONObject) productSearch).optString("name").contains(keyword)) {
+				  System.out.println("found");
 					//If keyword found outputs element object
 					keywordProductID = ((JSONObject) productSearch).optString("id").toString();
-					System.out.println("I HAVE FOUND KEYWORD1");
 					controller.statusColumnUpdateItemFound();
 					controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Item Found \n");
 				} 
@@ -181,7 +190,8 @@ public class Request implements Runnable {
 	public void variant_finder() throws JSONException, MalformedURLException, IOException {
 		System.out.println("I AM FINDING KEYWORD2");
 		// Convert to supremnewyork stock url and store as json object
-		JSONObject json = new JSONObject(IOUtils.toString(new URL(mainShop + "/shop/" + keywordProductID + ".json"), Charset.forName("UTF-8")));
+		JSONObject json = readJsonFromUrl(mainShop + "/shop/" + keywordProductID + ".json");
+//		JSONObject json = new JSONObject(IOUtils.toString(new URL(mainShop + "/shop/" + keywordProductID + ".json"), Charset.forName("UTF-8")));
 		
 		JSONArray styleJson = json.getJSONArray("styles");
 		
@@ -231,30 +241,62 @@ public class Request implements Runnable {
 		controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Fetching variants \n");
 	}
 
-		
+	
 	public void add_to_cart() throws IOException {
-
-		URL cartPost = new URL("http://www.supremenewyork.com/shop/" + keywordProductID + "/add");
-
+		System.out.println("In add to cart");
+		System.out.println("KeywordProductID: "+ keywordProductID + " color: "+ keyword_style_colour + " Size: "+ keyword_size);
+		URL cartPost = new URL("https://www.supremenewyork.com/shop/" + keywordProductID + "/add.json");
+		
 		// Create POST Request
 		mainConnection = (HttpURLConnection) cartPost.openConnection();
+//		String redirect = mainConnection.getHeaderField("Location");
+//		cartPost = new URL(redirect);
+//		mainConnection = (HttpURLConnection) cartPost.openConnection();
+
 		mainConnection.setReadTimeout(5000);
 		
 		//Attach POST Paramters (sie and style)
 		mainConnection.setRequestMethod("POST");
+//		mainConnection.setRequestProperty("Host", "www.supremenewyork.com");
+//		mainConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0");
+//		mainConnection.setRequestProperty("Accept", "*/*;q=0.5, text/javascript, application/javascript, application/ecmascript, application/x-ecmascript");
+//		mainConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+//		mainConnection.setRequestProperty("Acept-Encoding", "gzip, deflate, br");
+//		mainConnection.setRequestProperty("Referer", "https://www.supremenewyork.com/shop/accessories/h1x6q8bg3/evr2ecnmx");
+//		mainConnection.setRequestProperty("X-CSRF-Token", "K5RJeLkkK8Iee0PBaKBfiU73BhTF10VhEuQ8IoDl2YderUEYWQApP4qzwUP+Z/M9y9yxV1ni4UNCcExpbYq0Xg==");
+//		mainConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+//		mainConnection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+//		mainConnection.setRequestProperty("Content-Length", "50");
+//		mainConnection.setRequestProperty("Cookie", "");
+//		mainConnection.setRequestProperty("Connection", "keep-alive");
+//		mainConnection.setRequestProperty("TE", "Trailers");
 		mainConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
 		mainConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.8");
 		mainConnection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 
 		
 		//Post Variables
-		mainConnection.setRequestProperty("charset", "utf-8");
-		mainConnection.setRequestProperty("style", keyword_style_colour);
-		mainConnection.setRequestProperty("size", keyword_size);
-		mainConnection.setRequestProperty("commit", "add+to+basket");
+		mainConnection.setRequestProperty("utf8", "%E2%9C%93");
+		mainConnection.setRequestProperty("st", keyword_style_colour);
+		//mainConnection.setRequestProperty("s", keyword_size);
+		mainConnection.setRequestProperty("commit", "add+to+cart");
+//		mainConnection.setRequestProperty("charset", "utf-8");
+//		mainConnection.setRequestProperty("style", keyword_style_colour);
+//		mainConnection.setRequestProperty("size", keyword_size);
+//		mainConnection.setRequestProperty("commit", "add+to+basket");
+
+			
+		mainConnection.setRequestProperty("s","59764");/////////////////////////////////////////////
 		
 		mainConnection.connect();
-		
+		/////////////////////////////////////////////////////////////////////////
+		String redirect = mainConnection.getHeaderField("Location");
+		System.out.println("Redirect: " + redirect);
+		if(redirect!=null) {
+			cartPost = new URL(redirect);
+			mainConnection = (HttpURLConnection) cartPost.openConnection();
+		}
+		////////////////////////////////////////////////////////////////////
 		//Get Page Source and print it
 		BufferedReader r = new BufferedReader(new InputStreamReader(mainConnection.getInputStream(), Charset.forName("UTF-8")));
 
@@ -264,9 +306,10 @@ public class Request implements Runnable {
 		    sb.append(line);
 		}
 		
-		System.out.println(sb.toString());
+		System.out.println("Printing out string: " + sb.toString());
 
 		//Check if add to cart was successful, Status code 200 = OK
+		System.out.println(mainConnection.getResponseCode());
 		if(mainConnection.getResponseCode()>=200) {
 			System.out.println(mainConnection.getResponseCode());
 			
@@ -275,10 +318,63 @@ public class Request implements Runnable {
 			controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Adding to cart \n");
 		}
 		
-		try {
-			Thread.currentThread().wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+//		try {
+//			Thread.currentThread().wait();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+	}
+	
+	public void checkout() throws IOException {
+		System.out.println("In Checkout");
+		URL checkOut = new URL("https://www.supremenewyork.com/checkout.json");
+		
+		// Create POST Request
+		mainConnection = (HttpURLConnection) checkOut.openConnection();
+//		String redirect = mainConnection.getHeaderField("Location");
+//		cartPost = new URL(redirect);
+//		mainConnection = (HttpURLConnection) cartPost.openConnection();
+
+		mainConnection.setReadTimeout(5000);
+		
+		//Attach POST Paramters (sie and style)
+		mainConnection.setRequestMethod("GET");
+		mainConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
+		mainConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.8");
+		mainConnection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+
+
+
+			
+		
+		mainConnection.connect();
+		/////////////////////////////////////////////////////////////////////////
+//		String redirect = mainConnection.getHeaderField("Location");
+//		System.out.println("Redirect: " + redirect);
+//		if(redirect!=null) {
+//			checkOut = new URL(redirect);
+//			mainConnection = (HttpURLConnection) checkOut.openConnection();
+//		}
+		////////////////////////////////////////////////////////////////////
+		//Get Page Source and print it
+		BufferedReader r = new BufferedReader(new InputStreamReader(mainConnection.getInputStream(), Charset.forName("UTF-8")));
+
+		StringBuilder sb = new StringBuilder();
+		String line;
+		while ((line = r.readLine()) != null) {
+		    sb.append(line);
+		}
+		
+		System.out.println("Printing out string: " + sb.toString());
+
+		//Check if add to cart was successful, Status code 200 = OK
+		System.out.println(mainConnection.getResponseCode());
+		if(mainConnection.getResponseCode()>=200) {
+			System.out.println(mainConnection.getResponseCode());
+			
+			//Console and Status update
+			controller.statusColumnUpdateCheckedOut();
+			controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Checking out \n");
 		}
 	}
 
