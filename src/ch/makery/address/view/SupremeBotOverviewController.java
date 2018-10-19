@@ -41,7 +41,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -571,17 +570,31 @@ public class SupremeBotOverviewController {
 
 	//Themes
 	@FXML
+	private void toggleNewMainTheme() {
+		Scene loader = mainApp.main; //Loads the object into the scene so it can be accessed from this class
+		loader.getStylesheets().clear();
+		loader.getStylesheets().add(getClass().getResource("/css/NewMainTheme.css").toExternalForm());
+
+		Scene profile = mainApp.profileCreator; //Loads the object into the scene so it can be accessed from this class
+	}
+
+	@FXML
+	private void toggleNewDarkTheme() {
+		Scene loader = mainApp.main; //Loads the object into the scene so it can be accessed from this class
+		loader.getStylesheets().clear();
+		loader.getStylesheets().add(getClass().getResource("/css/NewDarkTheme.css").toExternalForm());
+
+		Scene profile = mainApp.profileCreator; //Loads the object into the scene so it can be accessed from this class
+	}
+
+	@FXML
 	private void toggleDarkTheme() {
 		Scene loader = mainApp.main; //Loads the object into the scene so it can be accessed from this class
 		loader.getStylesheets().clear();
 		loader.getStylesheets().add(getClass().getResource("/css/DarkTheme.css").toExternalForm());
 
 		Scene profile = mainApp.profileCreator; //Loads the object into the scene so it can be accessed from this class
-
-		profile.getStylesheets().add(getClass().getResource("/css/DarkTheme.css").toExternalForm());
-
 	}
-
 
 	@FXML
 	private void toggleClearTheme() {

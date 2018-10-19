@@ -49,6 +49,8 @@
                      </items></Menu>
                   <Menu mnemonicParsing="false" text="Theme">
                      <items>
+                        <MenuItem mnemonicParsing="false" onAction="#toggleNewMainTheme" text="New Main Theme" />
+                        <MenuItem mnemonicParsing="false" onAction="#toggleNewDarkTheme" text="New Dark Theme" />
                         <MenuItem mnemonicParsing="false" onAction="#toggleDarkTheme" text="Dark Theme" />
                         <MenuItem mnemonicParsing="false" onAction="#toggleClearTheme" text="Clear Theme" />
                      </items></Menu>
@@ -62,14 +64,22 @@
                      <children>
                         <BorderPane prefHeight="597.0" prefWidth="346.0">
                            <top>
-                              <ImageView fitHeight="38.0" fitWidth="122.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                              <!-- <ImageView fitHeight="38.0" fitWidth="122.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                                  <image>
                                     <Image url="@../../../../../resources/images/keywords.png" />
                                  </image>
                                  <BorderPane.margin>
                                     <Insets top="10.0" />
                                  </BorderPane.margin>
-                              </ImageView>
+                              </ImageView> -->
+                              <Label fx:id="taskSettingsText" text="Task Settings">
+                                 <font>
+                                    <Font size="30.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="20.0" top="3.0" />
+                                 </HBox.margin>
+                             </Label>
                            </top>
                            <bottom>
                               <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">

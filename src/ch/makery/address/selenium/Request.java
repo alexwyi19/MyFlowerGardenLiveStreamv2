@@ -23,10 +23,10 @@ import org.json.JSONObject;
 import ch.makery.address.view.SupremeBotOverviewController;
 
 public class Request implements Runnable {
-	
+
 	//Main bot overview controller
 	private final SupremeBotOverviewController controller;
-	
+
 	//Task variables
 	private int taskNumber;
 	private String keyword;
@@ -34,13 +34,13 @@ public class Request implements Runnable {
 	private String category;
 	private String color;
 	private String profileLoader;
-	
+
 	//Printer Writer for log text file, declared globally so other methods can use them
 	private PrintWriter printWriter;
-	
+
 	//Create global variables to connect to supremenewyork for all methods
 	private HttpURLConnection mainConnection;
-	
+
 	//Variables
 	private final String mainShop = "http://www.supremenewyork.com";
 	private final String mobile_stock = "http://www.supremenewyork.com/mobile_stock.json";
@@ -60,7 +60,7 @@ public class Request implements Runnable {
 		this.color = color;
 		this.profileLoader = profileLoader;
 	}
-	
+
 	/* Run: Runs this request thread using Runnable interface */
 	@Override
 	public void run() {
@@ -68,23 +68,23 @@ public class Request implements Runnable {
 			this.main(null);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
-	
+
 
 	public void main(String[] args) throws IOException {
-		
+
 		//Ensure status column is update
 		controller.statusColumnUpdateRunning();
-		
+
 		//Create log file
 		this.log_creator();
-		
+
 		//Test printer writer logger
 		printWriter.println("LOG [TASK: " + "1 - MODE[Requests] - " +  " Time: " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) + "]");
 		printWriter.println();
 		System.out.println("Trying to run the mobileStockChecker");
-		//finds keyword and saves 
+		//finds keyword and saves
 		try {
 			this.mobile_stock_checker();
 		} catch (JSONException e1) {
@@ -92,7 +92,7 @@ public class Request implements Runnable {
 			System.out.println("Failed to run");
 			e1.printStackTrace();
 		}
-		
+
 		//Finds the correct colour and variant for the keyword
 		try {
 			System.out.println("Finding variants");
@@ -103,13 +103,11 @@ public class Request implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		//Create POST Request to add the item to the cart
 		this.add_to_cart();
-		this.checkout();
-		
-		
 		//Create POST Request to check out
+		this.checkout();
 	}
 	  private static String readAll(Reader rd) throws IOException {
 		    StringBuilder sb = new StringBuilder();
@@ -123,11 +121,11 @@ public class Request implements Runnable {
 		//////////////////////////////////////////////////////
 		System.out.println(url);
 		URL u = new URL (url);
-		HttpURLConnection huc =  ( HttpURLConnection )  u.openConnection (); 
-//		huc.setRequestMethod ("GET");  //OR  huc.setRequestMethod ("HEAD"); 
+		HttpURLConnection huc =  ( HttpURLConnection )  u.openConnection ();
+//		huc.setRequestMethod ("GET");  //OR  huc.setRequestMethod ("HEAD");
 		huc.setRequestMethod("HEAD");
-		huc.connect () ; 
-		
+		huc.connect () ;
+
 		String redirect = huc.getHeaderField("Location");
 		InputStreamReader is;
 		if(redirect != null) {
@@ -161,7 +159,7 @@ public class Request implements Runnable {
 		JSONObject json = readJsonFromUrl(mobile_stock);
 		JSONObject main = json.getJSONObject("products_and_categories");
 		JSONArray categoryItem = main.getJSONArray(category);
-		
+
 		//Iterate throught the array objects until keyword is found
 		for (int i = 0; i < categoryItem.length(); i++) {
 			  Object productSearch = categoryItem.get(i);
@@ -174,7 +172,7 @@ public class Request implements Runnable {
 					keywordProductID = ((JSONObject) productSearch).optString("id").toString();
 					controller.statusColumnUpdateItemFound();
 					controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Item Found \n");
-				} 
+				}
 		}
 //		for (Object productSearch : categoryItem) {
 //			if ( ((JSONObject) productSearch).optString("name").contains(keyword)) {
@@ -182,19 +180,19 @@ public class Request implements Runnable {
 //				keywordProductID = ((JSONObject) productSearch).optString("id").toString();
 //				controller.statusColumnUpdateItemFound();
 //				controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Item Found \n");
-//			} 
+//			}
 //		}
 	}
-	
+
 	public void variant_finder() throws JSONException, MalformedURLException, IOException {
 		System.out.println("I AM FINDING KEYWORD2");
 		// Convert to supremnewyork stock url and store as json object
 		JSONObject json = readJsonFromUrl(mainShop + "/shop/" + keywordProductID + ".json");
 //		JSONObject json = new JSONObject(IOUtils.toString(new URL(mainShop + "/shop/" + keywordProductID + ".json"), Charset.forName("UTF-8")));
-		
+
 		JSONArray styleJson = json.getJSONArray("styles");
-		
-		
+
+
 		//Iterate throught the array objects until style colour is found
 		for (int i = 0; i < styleJson.length(); i++) {
 			  Object productSearch = styleJson.get(i);
@@ -202,14 +200,14 @@ public class Request implements Runnable {
 					//If keyword found outputs element object
 					keyword_style_colour = ((JSONObject) productSearch).optString("id").toString();
 
-				}  
+				}
 		}
 //		for (Object productSearch : styleJson) {
 //			if ( ((JSONObject) productSearch).optString("name").contains(color)) {
 //				//If keyword found outputs element object
 //				keyword_style_colour = ((JSONObject) productSearch).optString("id").toString();
 //
-//			} 
+//			}
 //		}
 		for (int i = 0; i < styleJson.length(); i++) {
 			  Object colorSearch = styleJson.get(i);
@@ -218,12 +216,12 @@ public class Request implements Runnable {
 				  Object djf = ((JSONArray) sizes).get(j);
 					if (((JSONObject) djf).optString("name").contains(size)) {
 						keyword_size = ((JSONObject) djf).optString("id").toString();
-					}	
+					}
 			  }
 //				for (Object djf : ((JSONArray) sizes)) {
 //					if (((JSONObject) djf).optString("name").contains(size)) {
 //						keyword_size = ((JSONObject) djf).optString("id").toString();
-//					}			
+//					}
 //				}
 		}
 //		for (Object colorSearch: styleJson) {
@@ -231,21 +229,21 @@ public class Request implements Runnable {
 //			for (Object djf : ((JSONArray) sizes)) {
 //				if (((JSONObject) djf).optString("name").contains(size)) {
 //					keyword_size = ((JSONObject) djf).optString("id").toString();
-//				}			
+//				}
 //			}
 //		}
-	
+
 		//Console and Status update
 		controller.statusColumnUpdateFetchingVariants();
 		controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Fetching variants \n");
 	}
 
-	
+
 	public void add_to_cart() throws IOException {
 		System.out.println("In add to cart");
 		System.out.println("KeywordProductID: "+ keywordProductID + " color: "+ keyword_style_colour + " Size: "+ keyword_size);
 		URL cartPost = new URL("https://www.supremenewyork.com/shop/" + keywordProductID + "/add.json");
-		
+
 		// Create POST Request
 		mainConnection = (HttpURLConnection) cartPost.openConnection();
 //		String redirect = mainConnection.getHeaderField("Location");
@@ -253,7 +251,7 @@ public class Request implements Runnable {
 //		mainConnection = (HttpURLConnection) cartPost.openConnection();
 
 		mainConnection.setReadTimeout(5000);
-		
+
 		//Attach POST Paramters (sie and style)
 		mainConnection.setRequestMethod("POST");
 //		mainConnection.setRequestProperty("Host", "www.supremenewyork.com");
@@ -273,7 +271,7 @@ public class Request implements Runnable {
 		mainConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.8");
 		mainConnection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 
-		
+
 		//Post Variables
 		mainConnection.setRequestProperty("utf8", "%E2%9C%93");
 		mainConnection.setRequestProperty("st", keyword_style_colour);
@@ -284,9 +282,9 @@ public class Request implements Runnable {
 //		mainConnection.setRequestProperty("size", keyword_size);
 //		mainConnection.setRequestProperty("commit", "add+to+basket");
 
-			
+
 		mainConnection.setRequestProperty("s","59764");/////////////////////////////////////////////
-		
+
 		mainConnection.connect();
 		/////////////////////////////////////////////////////////////////////////
 		String redirect = mainConnection.getHeaderField("Location");
@@ -304,31 +302,31 @@ public class Request implements Runnable {
 		while ((line = r.readLine()) != null) {
 		    sb.append(line);
 		}
-		
+
 		System.out.println("Printing out string: " + sb.toString());
 
 		//Check if add to cart was successful, Status code 200 = OK
 		System.out.println(mainConnection.getResponseCode());
 		if(mainConnection.getResponseCode()>=200) {
 			System.out.println(mainConnection.getResponseCode());
-			
+
 			//Console and Status update
 			controller.statusColumnUpdateAddingToCart();
 			controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Adding to cart \n");
 		}
-		
+
 //		try {
 //			Thread.currentThread().wait();
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
 	}
-	
+
 	/* TO DO:  */
 	public void checkout() throws IOException {
 		System.out.println("In Checkout");
 		URL checkOut = new URL("https://www.supremenewyork.com/checkout.json");
-		
+
 		// Create POST Request
 		mainConnection = (HttpURLConnection) checkOut.openConnection();
 //		String redirect = mainConnection.getHeaderField("Location");
@@ -336,13 +334,13 @@ public class Request implements Runnable {
 //		mainConnection = (HttpURLConnection) cartPost.openConnection();
 
 		mainConnection.setReadTimeout(5000);
-		
+
 		//Attach POST Paramters (sie and style)
 		mainConnection.setRequestMethod("GET");
 		mainConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36");
 		mainConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.8");
 		mainConnection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
-		
+
 		mainConnection.connect();
 		/////////////////////////////////////////////////////////////////////////
 //		String redirect = mainConnection.getHeaderField("Location");
@@ -360,29 +358,30 @@ public class Request implements Runnable {
 		while ((line = r.readLine()) != null) {
 		    sb.append(line);
 		}
-		
+
 		System.out.println("Printing out string: " + sb.toString());
 
 		//Check if add to cart was successful, Status code 200 = OK
-		System.out.println(mainConnection.getResponseCode());
-		if(mainConnection.getResponseCode()>=200) {
-			System.out.println("Finished Successful Checkout");
-			System.out.println(mainConnection.getResponseCode());
-			
+		if(mainConnection.getResponseCode() == 200) {
+			System.out.println("Finished Successful Checkout. Response Code: " + mainConnection.getResponseCode());
+
 			//Console and Status update
 			controller.statusColumnUpdateCheckedOut();
-			controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Checking out \n");
+			controller.getConsole().appendText("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task - Success! Checked out!\n");
+		}
+		else {
+			System.out.println("Response Code: " + mainConnection.getResponseCode());
 		}
 	}
 
-	
+
 	public void log_creator() throws IOException {
 		//Create Log File
 		try (Writer file = new FileWriter(System.getProperty("user.dir")+ "/resources/Logs/" + "/Log_Task_" + "1" + ".txt")) {
 			file.flush();
 			controller.getConsole().appendText("[" + new SimpleDateFormat("HH.mm.ss.SSS").format(new Date()) +  "]" + " - " + "Successfully created log file \n");
 		}
-				
+
 		//Start the print writer to Log to the file
 		FileWriter rawLogOutput = new FileWriter(System.getProperty("user.dir")+ "/resources/Logs/Log_Task_1.txt");
 		printWriter = new PrintWriter(rawLogOutput);
