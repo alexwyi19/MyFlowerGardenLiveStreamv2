@@ -1,3 +1,12 @@
+/.classpath
+/.gitattributes
+/.project
+/.settings/
+/LICENSE
+/README.md
+/bot.gif
 /ch/
-/template.PNG
+/css/
+/libraries/
 /resources/
+/template.PNG

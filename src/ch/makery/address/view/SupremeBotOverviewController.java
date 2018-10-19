@@ -79,7 +79,7 @@ public class SupremeBotOverviewController {
 	@FXML
 	private ComboBox<String> sizes;
 	@FXML
-	private ComboBox<String> catogry;
+	private ComboBox<String> category;
 	@FXML
 	private ComboBox<String> profiles;
 	@FXML
@@ -119,10 +119,10 @@ public class SupremeBotOverviewController {
 	private MainApp mainApp;
 	private ENUMstatus enumstatus;
 	private ObservableList<String> profileList = FXCollections.observableArrayList();
-	
+
 	public List<Thread> threads = new ArrayList<Thread>();
-	 
-	
+
+
 	//Option Values
 	private ObservableList<String> sizeList = FXCollections.observableArrayList("Small", "Medium", "Large", "XLarge", "---------", "onesize",
 			"---------", "30", "32", "34", "36", "38", "40");
@@ -143,17 +143,17 @@ public class SupremeBotOverviewController {
 	private Integer taskCounter = 1;
 	public String st[] = new String[100];
 	public int noOfTasksID;
-	
-	
-	
+
+
+
 	private SupremeBotOverviewController passableController;
 	private Selenium browser;
 
 	/**
 	 * Is called by the main application to give a reference back to itself.
-	 * 
+	 *
 	 * @param mainApp
-	 * @param botController 
+	 * @param botController
 	 */
 	public void setMainApp(MainApp mainApp, SupremeBotOverviewController botController) {
 		this.passableController = botController;
@@ -162,7 +162,7 @@ public class SupremeBotOverviewController {
 		supremeTask.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		supremeTask.setPlaceholder(new Label(""));
 	}
-	
+
 	public ObservableList<String> getProfileList(){
 		return profileList;
 	}
@@ -170,7 +170,7 @@ public class SupremeBotOverviewController {
 	public TableView<SupremeTask> returnTasks() {
 		return supremeTask;
 	}
-	
+
 	public void setBrowserMode(Selenium browser) {
 		this.browser = browser;
 	}
@@ -182,11 +182,11 @@ public class SupremeBotOverviewController {
 	public TableColumn<SupremeTask, String> returnStatusColumn() {
 		return statusColumn;
 	}
-	
+
 	public TextArea getConsole() {
 		return console;
 	}
-	
+
 	public ComboBox<String> getCboProfiles(){
 		return profiles;
 	}
@@ -201,41 +201,41 @@ public class SupremeBotOverviewController {
 		//Open captcha Window
 		mainApp.showRecaptchaWindow();
 	}
-	
+
 	@FXML
 	private void handleAboutWindow(ActionEvent action) {
 		//Open captcha Window
 		mainApp.showAboutWindow();
 	}
-	
+
 	@FXML
 	private void handleImageScraper(ActionEvent action) throws FileNotFoundException {
 		//Open captcha Window
 		mainApp.showImageScraperDialog();
 	}
-	
+
 	@FXML
 	private void handleKeywordWindow(ActionEvent action) throws FileNotFoundException {
 		//Open Keyword Window
 		mainApp.keywordDialog();
 	}
-	
+
 	@FXML
 	private void handleStartTimerDialog(ActionEvent action) {
 		//Open Start Timer dialog
 		mainApp.timerDialog();
 	}
-	
+
 	@FXML
 	private void handleCheckoutDelayDialog(ActionEvent action) {
 		//Open checkout delay dialog
 		mainApp.checkoutDelayDialog();
 	}
-	
+
 	public void consoleWriter(String temp) {
 		console.appendText(temp);
 	}
-	
+
 	@FXML
 	private void handleExitButton(ActionEvent actionEvent) {
 		Node source = (Node) actionEvent.getSource();
@@ -247,7 +247,7 @@ public class SupremeBotOverviewController {
 	private void handleCloseWindow() {
 		Platform.exit();
 	}
-	
+
 	/**
 	 * Initializes the controller class. This method is automatically called after
 	 * the fxml file has been loaded.
@@ -255,7 +255,7 @@ public class SupremeBotOverviewController {
 	@FXML
 	public void initialize() {
 		try {
-			//Checking Folder resources/json for profiles and adding them to the Combo Boxes 
+			//Checking Folder resources/json for profiles and adding them to the Combo Boxes
 			try {
 				File folder = new File(System.getProperty("user.dir")+ "/resources/json/");
 				File[] listOfFiles = folder.listFiles();
@@ -268,9 +268,9 @@ public class SupremeBotOverviewController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-		
-			
+
+
+
 			idColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty());
 			itemColumn.setCellValueFactory(cellData -> cellData.getValue().getIemProperty());
 			sizeColumn.setCellValueFactory(cellData -> cellData.getValue().getSizeProperty());
@@ -279,43 +279,43 @@ public class SupremeBotOverviewController {
 			billingColumn.setCellValueFactory(cellData -> cellData.getValue().getBillingProperty());
 			modeColumn.setCellValueFactory(cellData -> cellData.getValue().getModeProperty());
 			statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusProperty());
-		
-		
+
+
 			profiles.setItems(profileList);
 			profiles.getSelectionModel().select(0);
-			
+
 			sizes.setItems(sizeList);
 			sizes.getSelectionModel().select(0);
-			
+
 			modes.setItems(modeList);
 			modes.getSelectionModel().select(0);
 
-			catogry.setItems(statusList);
-			catogry.getSelectionModel().select(0);
+			category.setItems(statusList);
+			category.getSelectionModel().select(0);
 
 			colour.setItems(colourList);
 			colour.getSelectionModel().select(0);
-			
+
 			this.consoleWriter("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Initialized Bot \n");
-			
-			
+
+
 			//Delete selected row
 			supremeTask.setRowFactory( tv -> {
 			    TableRow<SupremeTask> row = new TableRow<>();
-			    
+
 			    //Change cursor over hover
 			    row.hoverProperty().addListener((observable) -> {
 			        final SupremeTask person = row.getItem();
 
 			        if (row.isHover() && person != null) {
-			           row.setCursor(Cursor.HAND);			            
+			           row.setCursor(Cursor.HAND);
 			        }
 			    });
-			    
+
 			    row.setOnMouseClicked(event -> {
 			        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
 			        	SupremeTask rowData = row.getItem();
-			           
+
 			        	 TextField itemTextField = new TextField(rowData.getIem());
 			             TextField categoryTextField =  new TextField(rowData.getCategory());
 			             TextField sizeTextField =  new TextField(rowData.getSize());
@@ -326,13 +326,13 @@ public class SupremeBotOverviewController {
 			         	 ComboBox<String> modes = new ComboBox<String>();
 			             modes.getItems().addAll(modeList);
 			             modes.getSelectionModel().select(rowData.getMode());
-			           
+
 
 			             GridPane grid = new GridPane();
 			             grid.setHgap(10);
 			             grid.setVgap(10);
 			             grid.setPadding(new Insets(16));
-			             			             
+
 
 
 			             grid.addRow(0, new Label("Item:"), itemTextField);
@@ -340,13 +340,13 @@ public class SupremeBotOverviewController {
 			             grid.addRow(2, new Label("Size:"), sizeTextField);
 			             grid.addRow(3, new Label("Colour:"), colourTextField);
 			             grid.addRow(4, new Label("Billing profile:"), profiles);
-			             grid.addRow(5, new Label("Mode:"), modes);		
-			    
+			             grid.addRow(5, new Label("Mode:"), modes);
+
 
 			             Button okButton = new Button("OK");
 
 			             grid.add(okButton, 0, 7, 2, 1);
-			             
+
 			             ColumnConstraints leftCol = new ColumnConstraints();
 			             leftCol.setHgrow(Priority.NEVER);
 			             leftCol.setHalignment(HPos.RIGHT);
@@ -374,25 +374,25 @@ public class SupremeBotOverviewController {
 			    });
 			    return row ;
 			});
-			
-			
+
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			
+
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
 			ex.printStackTrace(pw);
 			String exceptionText = sw.toString();
-			    
+
 			try {
 				mainApp.errorStackTraceDialog("Stack Trace Error: See Log", exceptionText);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-		
+
 		}
 	}
-	
+
 
 	private void addButtonToTable() {
 
@@ -403,17 +403,17 @@ public class SupremeBotOverviewController {
 					// Creates the start button
 					final ImageView imageView = new ImageView(
 							new Image("file:" + System.getProperty("user.dir") + "/resources/images/start.png"));
-					
+
 
 					Thread singleBrowserTask;
-					
 
-				
+
+
 					private final Button startTasks = new Button("", imageView);
 					{
 						startTasks.setStyle("-fx-background-color: transparent;");
 						startTasks.setOnAction((ActionEvent event) -> {
-							
+
 							consoleWriter("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task started \n");
 							if (this.getTableView().getItems().get(getIndex()).toString().contains("Browser")) {
 								singleBrowserTask = new Thread(new Selenium(passableController,
@@ -443,9 +443,9 @@ public class SupremeBotOverviewController {
 								singleBrowserTask.start();
 							}
 						});
-					
+
 					}
-					
+
 
 					final ImageView stopImage = new ImageView(
 							new Image("file:" + System.getProperty("user.dir") + "/resources/images/stop.png"));
@@ -484,104 +484,104 @@ public class SupremeBotOverviewController {
 		actionColumn.setCellFactory(cellFactory);
 
 	}
-	  
+
 	/*
 	 * Still needs fixing, Function needs any active browsers currently open and set the status label as idle.
 	 * */
 	@FXML
 	public void stopTasks() {
 		browser.killBrowser();
-		
+
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusProperty());
 		statusColumn.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
 		supremeTask.refresh();
-		
+
 		for (Iterator<Thread> itr = threads.listIterator(); itr.hasNext();) {
             Thread thread = itr.next();
             thread.interrupt();
         }
 	}
-	
-	
+
+
 	@FXML
 	public void clearAllTasks(ActionEvent event) {
 		supremeTask.getItems().clear();
 		supremeTask.setPlaceholder(new Label(""));
 		taskCounter = 1;
 		threads.clear();
-		
+
 		this.showNotication();
 	}
-	
+
 	//Status Column Updates
 	public void statusColumnUpdateError() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getErrorProperty());
 		statusColumn.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
+
 	public void statusColumnUpdateRunning() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusRunningProperty());
 		statusColumn.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
+
 	public void statusColumnUpdateItemFound() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getFoundItemProperty());
 		statusColumn.setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
+
 	public void statusColumnUpdateItemNotFound() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getItemNotFoundProperty());
 		statusColumn.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
+
 	public void statusColumnUpdateFetchingVariants() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getFetchingVariantsProperty());
 		statusColumn.setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
+
 	public void statusColumnUpdateAddingToCart() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getAddingToCartProperty());
 		statusColumn.setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
+
 	public void statusColumnUpdateCheckingOut() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getCheckedOutProperty());
 		statusColumn.setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
+
 	public void statusColumnUpdateRecaptcha() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getRecaptchaTokenProperty());
 		statusColumn.setStyle("-fx-text-fill: #005cf2; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
+
 	public void statusColumnUpdateCheckedOut() {
 		statusColumn.setCellValueFactory(cellData -> cellData.getValue().getCheckedOutProperty());
 		statusColumn.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
 		supremeTask.refresh();
 	}
-	
-	
+
+
 	//Themes
 	@FXML
 	private void toggleDarkTheme() {
 		Scene loader = mainApp.main; //Loads the object into the scene so it can be accessed from this class
 		loader.getStylesheets().clear();
 		loader.getStylesheets().add(getClass().getResource("/css/DarkTheme.css").toExternalForm());
-		
+
 		Scene profile = mainApp.profileCreator; //Loads the object into the scene so it can be accessed from this class
-		
+
 		profile.getStylesheets().add(getClass().getResource("/css/DarkTheme.css").toExternalForm());
 
 	}
-	
+
 
 	@FXML
 	private void toggleClearTheme() {
@@ -589,66 +589,66 @@ public class SupremeBotOverviewController {
 		loader.getStylesheets().clear();
 		loader.getStylesheets().add(getClass().getResource("/css/ClearTheme.css").toExternalForm());
 	}
-	
-	//Fetches all the info typed into left panel and sets in the keywordInfo Model. 
+
+	//Fetches all the info typed into left panel and sets in the keywordInfo Model.
 	@FXML
-	public void fetchCatogory(ActionEvent action) {
+	public void fetchCategory(ActionEvent action) {
 		if (keywords.getText().length() <= 0) {
 			this.alertDialogBuilder("Information Dialog", null, "Please Input Keyword");
 		} else {
-				
-			// Fetch keywords for size input	
+
+			// Fetch keywords for size input
 			String sizeID = sizes.getSelectionModel().getSelectedItem().toString();
-	
+
 			// Fetch keywords for input field
 			String keywordsID = keywords.getText().toString();
-	
-			// Fetch selected catogory on the bot
-			String catagoryID = catogry.getValue();
-	
+
+			// Fetch selected category on the bot
+			String categoryID = category.getValue();
+
 			// Fetch the select color
 			String colourID = colour.getValue();
-	
+
 			String proxyID = txtProxy.getText().toString();
-			
+
 			String profileID = profiles.getSelectionModel().getSelectedItem().toString();
-	
+
 			String modeID = modes.getSelectionModel().getSelectedItem().toString();
 			keywordInfo.getKeywordInfo().setMode(modeID);
 
 			this.addButtonToTable();
-			
+
 			noOfTasksID = 0;
 			if (noOfTasks.getText().isEmpty()) {
 				noOfTasksID = 0;
 			} else {
 				noOfTasksID = Integer.parseInt(noOfTasks.getText());
 			}
-		 
-				
+
+
 			//Add task to table
 			for (int i = 0; i < noOfTasksID; i++) {
-				mainApp.getTaskData().add(new SupremeTask(taskCounter.toString(), keywordsID, sizeID ,colourID , catagoryID, profileID, ENUMstatus.Ready.toString(), modeID));
+				mainApp.getTaskData().add(new SupremeTask(taskCounter.toString(), keywordsID, sizeID ,colourID , categoryID, profileID, ENUMstatus.Ready.toString(), modeID));
 				statusColumn.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
 				taskCounter = supremeTask.getItems().size()  + 1 ;
 
-	            
-				
+
+
 				this.consoleWriter("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Task created - [" + sizeID + ", " + keywordsID + ", "  + colourID + "]" + "\n");
 		}
 
-		//Sets amount of tasks in model	
+		//Sets amount of tasks in model
 		keywordInfo.getKeywordInfo().setTasks(supremeTask.getItems().size());
 		}
 	}
-	
-	
+
+
 	@FXML
 	public void createTask(ActionEvent event) throws InterruptedException, IOException, ParseException {
 		boolean startTimer = keywordInfo.getKeywordInfo().getHasRunStarted();
 		String startTime = keywordInfo.getKeywordInfo().getStartTimer();
-		
-	
+
+
 		//If there is not start timer on the task a regular launch should happen other timer task should be started
 		if (startTimer == false){
 				//Check which mode should be running based on task information
@@ -664,29 +664,29 @@ public class SupremeBotOverviewController {
 						this.threads.add(taskInformation);
 					}
 				}
-		
+
 				//Start the threads one by one
 				for (Iterator<Thread> itr = threads.listIterator(); itr.hasNext();) {
 		            Thread thread = itr.next();
 		            thread.start();
 		        }
-				
+
 				//Clear the threads for the next run
 				threads.clear();
-			
+
 		} else if (startTimer == true ) {
 				DateFormat year = new SimpleDateFormat("yyyy-MM-dd ");
 				Date yearDate = new Date();
 				System.out.println(year.format(yearDate)); //2016/11/16 12:08:43 -- TEST
-				
+
 				DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date date = dateFormatter.parse(year.format(yearDate) + startTime);
-				
+
 				Timer timer = new Timer();
 				timer.schedule(new schedulerDispatch(), date);
 				this.consoleWriter("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Tasks - Waiting for countdown: " + date + "\n");
 		}
-		
+
 		//Change column status to 'running'
 		if (startTimer == true) {
 			statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStartTimerProperty());
@@ -698,8 +698,8 @@ public class SupremeBotOverviewController {
 			supremeTask.refresh();
 		}
 	}
-	
-	
+
+
 	//Method for timed tasks
 	public class schedulerDispatch extends TimerTask {
 		public void run() {
@@ -712,32 +712,32 @@ public class SupremeBotOverviewController {
 				for (SupremeTask task :supremeTask.getItems()) {
 					Thread taskInformation  = new Thread(new Request(passableController, supremeTask.getItems().size() + 1 ,task.getIem().toString(), task.getSize(), task.getCategory(), task.getColour(), task.getBillingProfile()));
 					threads.add(taskInformation);
-				}						
+				}
 			}
-			
+
 			for (Iterator<Thread> itr = threads.listIterator(); itr.hasNext();) {
 	            Thread thread = itr.next();
 	            thread.start();
 	        }
-			
+
 			//Clear the threads for the next run
 			threads.clear();
 		}
 	}
-	
+
 	public void showNotication() {
-				
+
 		Notifications notificationBuilder = Notifications.create()
 				.title("Download Complete")
 				.text("Saved to home/downloads")
 				.graphic(new ImageView(new Image("file:" + System.getProperty("user.dir") + "/resources/images/checked.png")))
 				.hideAfter(Duration.seconds(5))
 				.position(Pos.BOTTOM_RIGHT);
-		
+
 		notificationBuilder.darkStyle();
 		notificationBuilder.show();
 	}
-	
+
 
 	//Custom alert dialog for errors
 	private void alertDialogBuilder(String title, String header, String content) {
@@ -748,5 +748,5 @@ public class SupremeBotOverviewController {
 		alert.showAndWait();
 	}
 
-	
+
 }

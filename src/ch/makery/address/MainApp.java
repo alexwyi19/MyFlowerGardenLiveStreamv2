@@ -44,13 +44,13 @@ public class MainApp extends Application {
 	public Stage dialogue;
 	private Stage primaryStage;
 	private ObservableList<SupremeTask> taskData = FXCollections.observableArrayList();
-	
+
 	private SupremeBotOverviewController botController;
 	private ProfileCreatorController profileController;
 	private reCaptchaController recaptchaController;
-	
-    private Logger logger = Logger.getLogger(getClass().getName());
 
+
+	private Logger logger = Logger.getLogger(getClass().getName());
 
 	// Gets current Table
 	public ObservableList<SupremeTask> getTaskData() {
@@ -84,12 +84,11 @@ public class MainApp extends Application {
 
 			botController = loader.getController();
 			botController.setMainApp(this, botController);
-			
+
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "", e);
 		}
 	}
-
 
 	public void showProfileCreator() {
 		try {
@@ -110,12 +109,11 @@ public class MainApp extends Application {
 					.add(new Image("file:" + System.getProperty("user.dir") + "/resources/images/" + "edit.png"));
 			dialogue.setResizable(false);
 			profileCreator.getStylesheets().add(css);
-			
+
 			profileController = loader.getController();
 			profileController.setDialogStage(dialogue);
-			
+
 			profileController.setProfileCreatorController(botController);
-		
 
 			dialogue.show();
 		} catch (IOException e) {
@@ -145,7 +143,8 @@ public class MainApp extends Application {
 			dialogStage.setScene(scene);
 			dialogStage.show();
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "", e);		}
+			logger.log(Level.SEVERE, "", e);
+		}
 	}
 
 	// Start Timer Dialog box
@@ -162,22 +161,20 @@ public class MainApp extends Application {
 		dialog.setTitle("Tasks start timer");
 		dialog.setContentText("Time:");
 		dialog.setGraphic(null);
-				
+
 		ButtonType resetTimer = new ButtonType("Reset");
 		dialog.getDialogPane().getButtonTypes().add(resetTimer);
-		
-		//Lookup button and reset the hasRunStarted variable to set timer to false
-		final Button reset = (Button) dialog.getDialogPane().lookupButton(resetTimer);
-		reset.addEventFilter(ActionEvent.ACTION, event -> 
-			keywordInfo.getKeywordInfo().setHasRunStarted(false)
-		);
 
-		
+		// Lookup button and reset the hasRunStarted variable to set timer to false
+		final Button reset = (Button) dialog.getDialogPane().lookupButton(resetTimer);
+		reset.addEventFilter(ActionEvent.ACTION, event -> keywordInfo.getKeywordInfo().setHasRunStarted(false));
+
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent()) {
 			keywordInfo.getKeywordInfo().setStartTimer(result.get());
-			//Console log update
-			botController.consoleWriter("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Set tasks start timer: " + result.get() + "\n");
+			// Console log update
+			botController.consoleWriter("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - "
+					+ "Set tasks start timer: " + result.get() + "\n");
 			keywordInfo.getKeywordInfo().setHasRunStarted(true);
 		}
 
@@ -201,43 +198,38 @@ public class MainApp extends Application {
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent()) {
 			keywordInfo.getKeywordInfo().setCheckoutDelay(Integer.parseInt(result.get()));
-			botController.consoleWriter("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - " + "Set checkout delay: " + result.get() + "\n");
+			botController.consoleWriter("[" + new SimpleDateFormat("HH:mm:ss:SS").format(new Date()) + "] - "
+					+ "Set checkout delay: " + result.get() + "\n");
 		}
 
 	}
-	
+
 	public void showAboutWindow() {
 		String information = "Version: 1.4.0.0";
-		String updates = 
-				  "\n+ Added start and top buttons for individual tasks "
-				+ "\n+ Added action column "
+		String updates = "\n+ Added start and top buttons for individual tasks " + "\n+ Added action column "
 				+ "\n+ New About window dialog showing updates and version info "
-				+ "\n+ Delete a row by double clicking "
-				+ "\n+ Fixed log output for each task "
+				+ "\n+ Delete a row by double clicking " + "\n+ Fixed log output for each task "
 				+ "\n+ Added slider for theme switcher";
-				
-		
+
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("About");
 		alert.setHeaderText("Information");
 		alert.setContentText(information);
-		
+
 		ButtonType resetTimer = new ButtonType("Twitter");
 		alert.getDialogPane().getButtonTypes().add(resetTimer);
-		
+
 		Button resetTimerBtn = (Button) alert.getDialogPane().lookupButton(resetTimer);
-		resetTimerBtn.addEventFilter(ActionEvent.ACTION, event -> 
-			getHostServices().showDocument("https://twitter.com/DrExpresso")
-		);
-		
+		resetTimerBtn.addEventFilter(ActionEvent.ACTION,
+				event -> getHostServices().showDocument("https://twitter.com/DrExpresso"));
+
 		ButtonType github = new ButtonType("Github");
 		alert.getDialogPane().getButtonTypes().add(github);
-		
+
 		Button githutBtn = (Button) alert.getDialogPane().lookupButton(github);
-		githutBtn.addEventFilter(ActionEvent.ACTION, event -> 
-			getHostServices().showDocument("https://github.com/DrExpresso/SupremeAIO")
-		);
-		
+		githutBtn.addEventFilter(ActionEvent.ACTION,
+				event -> getHostServices().showDocument("https://github.com/DrExpresso/SupremeAIO"));
+
 		Label label = new Label("Updates:");
 
 		TextArea textArea = new TextArea(updates);
@@ -260,23 +252,22 @@ public class MainApp extends Application {
 		alert.showAndWait();
 
 	}
-	
+
 	public void showImageScraperDialog() throws FileNotFoundException {
 		ImageScrapperController controller = new ImageScrapperController();
-		
+
 		Stage dialogStage = new Stage();
 		dialogStage.setTitle("Keywords");
 		dialogStage.initModality(Modality.NONE);
-		dialogStage.getIcons().add(
-				new Image("file:" + System.getProperty("user.dir") + "/resources/images/" + "keyword.ico"));
+		dialogStage.getIcons()
+				.add(new Image("file:" + System.getProperty("user.dir") + "/resources/images/" + "keyword.ico"));
 		String css = this.getClass().getResource("/css/ClearTheme.css").toExternalForm();
 		dialogStage.initOwner(primaryStage);
-		
-		
+
 		controller.start(dialogStage);
 	}
-	
-	//Keyword help
+
+	// Keyword help
 	public void keywordDialog() throws FileNotFoundException {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -286,8 +277,8 @@ public class MainApp extends Application {
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Keywords");
 			dialogStage.initModality(Modality.NONE);
-			dialogStage.getIcons().add(
-					new Image("file:" + System.getProperty("user.dir") + "/resources/images/" + "keyword.ico"));
+			dialogStage.getIcons()
+					.add(new Image("file:" + System.getProperty("user.dir") + "/resources/images/" + "keyword.ico"));
 			String css = this.getClass().getResource("/css/ClearTheme.css").toExternalForm();
 			dialogStage.initOwner(primaryStage);
 			Scene scene = new Scene(page);
@@ -297,21 +288,19 @@ public class MainApp extends Application {
 			controller.setMainApp(this);
 			controller.setDialogStage(dialogStage);
 
-			
-			
 			dialogStage.setScene(scene);
 			dialogStage.show();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
-		
+
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			String exceptionText = sw.toString();
-			    
+
 			this.errorStackTraceDialog("Stacktrace error see log", exceptionText);
-			    
+
 		}
 	}
 

@@ -123,7 +123,7 @@
                                     </HBox>
                                     <HBox prefHeight="34.0" prefWidth="348.0">
                                        <children>
-                                          <Label fx:id="category" prefHeight="21.0" prefWidth="136.0" text="Category:">
+                                          <Label fx:id="categoryLabel" prefHeight="21.0" prefWidth="136.0" text="Category:">
                                              <font>
                                                 <Font size="15.0" />
                                              </font>
@@ -131,7 +131,7 @@
                                                 <Insets left="20.0" top="3.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <ComboBox fx:id="catogry" prefHeight="25.0" prefWidth="128.0" />
+                                          <ComboBox fx:id="category" prefHeight="25.0" prefWidth="128.0" />
                                        </children>
                                        <VBox.margin>
                                           <Insets top="5.0" />
@@ -242,7 +242,7 @@
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#fetchCatogory" prefHeight="29.0" prefWidth="88.0" text="Create" GridPane.columnIndex="1">
+                                                <Button mnemonicParsing="false" onAction="#fetchCategory" prefHeight="29.0" prefWidth="88.0" text="Create" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="11.0" />
                                                    </GridPane.margin>
